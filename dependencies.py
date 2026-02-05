@@ -2,7 +2,7 @@ from models import db
 from sqlalchemy.orm import sessionmaker
 
 
-async def get_session():
+def get_session():
     try:
         Session = sessionmaker(bind=db)
         session = Session()
