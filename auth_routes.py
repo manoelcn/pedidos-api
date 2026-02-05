@@ -41,3 +41,18 @@ async def create_account(user_schema: UserSchema, session: Session = Depends(get
         session.add(new_user)
         session.commit()
         return {'message': 'successfully registered user'}
+
+
+@auth_router.post('/login')
+async def login(login_schema: LoginSchema, session: Session = Depends(get_session)):
+    user = authenticate_user(login_schema.email, login_schema.password, session)
+    if not user:
+        raise HTTPException(status_code=400, detail='user not found')
+    else:
+        access_token = create_token(user.id)
+        refresh_token = create_token(user.id, token_duration=timedelta(days=7))
+        return {
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'token_type': 'Bearer'
+        }
