@@ -17,6 +17,13 @@ def create_token(user_id: int, token_duration=timedelta(minutes=ACCESS_TOKEN_EXP
     jwt_encoded = jwt.encode(info_dict, SECRET_KEY, ALGORITHM)
     return jwt_encoded
 
+def authenticate_user(email: str, password: str, session: Session):
+    user = session.query(User).filter(User.email==email).first()
+    if not user:
+        return False
+    elif not bcrypt_context.verify(password, user.password):
+        return False
+    return user
 
 @auth_router.get('/')
 async def home():
