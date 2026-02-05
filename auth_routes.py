@@ -13,7 +13,7 @@ async def home():
     return {'message': 'auth'}
 
 
-@auth_router.post('/users')
+@auth_router.post('/create')
 async def create_account(user_schema: UserSchema, session: Session = Depends(get_session)):
     user = session.query(User).filter(User.email==user_schema.email).first()
     if user:
