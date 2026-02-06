@@ -38,6 +38,9 @@ class Order(Base):
         self.user = user
         self.status = status
         self.price = price
+    
+    def calculate_price(self):
+        self.price = sum(item.unit_price * item.quantity for item in self.items)
 
 
 class Item(Base):
