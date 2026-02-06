@@ -34,6 +34,19 @@ async def cancel_order(order_id: int, session: Session = Depends(get_session), u
     }
 
 
+@order_router.post('/finalize/{order_id}')
+async def finalize_order(order_id: int, session: Session = Depends(get_session)):
+    order = session.query(Order).filter(Order.id==order_id).first()
+    if not order:
+        raise HTTPException(status_code=400, detail='order not found')
+    order.status = 'FINALIZADO'
+    session.commit()
+    return {
+        'message': f'Order {order.id} finalized',
+        'order_status': order.status
+    }
+
+
 @order_router.get('/list')
 async def list_orders(session: Session = Depends(get_session), user: User = Depends(verify_token)):
     if not user.admin:
