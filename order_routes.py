@@ -85,12 +85,12 @@ async def add_item_to_order(order_id: int, item_schema: ItemSchema, session: Ses
     }
 
 
-@order_router.post('/{order_id}/remove/item/{item_id}')
-async def remove_item_to_order(order_id: int, item_id: int, session: Session = Depends(get_session)):
+@order_router.post('/remove/item/{item_id}')
+async def remove_item_to_order(item_id: int, session: Session = Depends(get_session)):
     item = session.query(Item).filter(Item.id==item_id).first()
+    if not item:
+        raise HTTPException(status_code=400, detail='item not found')
     order = session.query(Order).filter(Order.id==item.order).first()
-    if not order:
-        raise HTTPException(status_code=400, detail='order not found')
     session.delete(item)
     order.calculate_price()
     session.commit()
