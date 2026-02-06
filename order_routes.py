@@ -61,6 +61,7 @@ async def list_orders(session: Session = Depends(get_session), user: User = Depe
 @order_router.get('/{order_id}/detail')
 async def detail_order(order_id: int, session: Session = Depends(get_session)):
     order = session.query(Order).filter(Order.id==order_id).first()
+    order.items
     if not order:
         raise HTTPException(status_code=400, detail='order not found')
     return {
