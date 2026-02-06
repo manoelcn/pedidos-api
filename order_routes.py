@@ -45,6 +45,16 @@ async def list_orders(session: Session = Depends(get_session), user: User = Depe
         }
 
 
+@order_router.get('/{order_id}/detail')
+async def detail_order(order_id: int, session: Session = Depends(get_session)):
+    order = session.query(Order).filter(Order.id==order_id).first()
+    if not order:
+        raise HTTPException(status_code=400, detail='order not found')
+    return {
+        'order': order
+    }
+
+
 @order_router.post('/{order_id}/add/item')
 async def add_item_to_order(order_id: int, item_schema: ItemSchema, session: Session = Depends(get_session)):
     order = session.query(Order).filter(Order.id==order_id).first()
