@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, String, Integer, Boolean, Float, ForeignKey
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy_utils.types import ChoiceType
 
 
@@ -32,6 +32,7 @@ class Order(Base):
     status = Column('status', String)
     user = Column('user', ForeignKey('users.id'))
     price = Column('preco', Float)
+    items = relationship('Item', cascade='all, delete')
 
     def __init__(self, user, status='PENDENTE', price=0):
         self.user = user
